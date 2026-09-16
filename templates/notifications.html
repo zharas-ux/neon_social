@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Уведомления — NEON SOCIAL{% endblock %}
+{% block content %}
+
+<h3>Уведомления</h3>
+<div class="card">
+    {% if not items %}
+        <div class="empty-state">Уведомлений пока нет.</div>
+    {% endif %}
+    {% for n in items %}
+    <div class="list-item notif-item {% if not n.is_read %}unread{% endif %}">
+        <div>
+            {{ n.text }}
+            <div class="time">{{ n.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+        </div>
+        {% if n.link %}<a class="btn small secondary" href="{{ n.link }}">Открыть</a>{% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

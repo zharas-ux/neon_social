@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}NEON SOCIAL{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<div class="navbar">
+    <div class="brand">NEON SOCIAL</div>
+    <div class="nav-links">
+        <a href="{{ url_for('feed') }}">Лента</a>
+        <a href="{{ url_for('friend_requests') }}">Запросы
+            {% if pending_requests %}<span class="badge">{{ pending_requests }}</span>{% endif %}
+        </a>
+        <a href="{{ url_for('messages') }}">Сообщения
+            {% if unread_msgs %}<span class="badge">{{ unread_msgs }}</span>{% endif %}
+        </a>
+        <a href="{{ url_for('notifications') }}">Уведомления
+            {% if unread_notif %}<span class="badge">{{ unread_notif }}</span>{% endif %}
+        </a>
+        <a href="{{ url_for('profile', username=current_user.username) }}">
+            <img class="avatar xs" src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}" alt="avatar" onerror="this.style.display='none'">
+            {{ current_user.username }}
+        </a>
+        <a href="{{ url_for('logout') }}">Выйти</a>
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

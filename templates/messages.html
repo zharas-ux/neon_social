@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Сообщения — NEON SOCIAL{% endblock %}
+{% block content %}
+
+<h3>Ваши друзья</h3>
+<div class="card">
+    {% if not friends %}
+        <div class="empty-state">У вас пока нет друзей. Добавьте кого-нибудь, чтобы начать переписку!</div>
+    {% endif %}
+    {% for f in friends %}
+    <a href="{{ url_for('chat', user_id=f.id) }}" class="list-item" style="color:inherit;">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img class="avatar sm" src="{{ url_for('static', filename='uploads/' + f.avatar) }}" onerror="this.style.display='none'">
+            {{ f.username }}
+        </div>
+        <span>💬</span>
+    </a>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Лента — NEON SOCIAL{% endblock %}
+{% block content %}
+
+<div class="card">
+    <form method="POST">
+        <textarea class="input" name="content" rows="3" placeholder="Что у вас нового?" required></textarea>
+        <button class="btn" type="submit">Опубликовать</button>
+    </form>
+</div>
+
+{% if not posts %}
+    <div class="empty-state">Пока нет постов. Добавьте друзей или напишите первый пост!</div>
+{% endif %}
+
+{% for post in posts %}
+<div class="card">
+    <div class="post-header">
+        <a href="{{ url_for('profile', username=post.author.username) }}">
+            <img class="avatar sm" src="{{ url_for('static', filename='uploads/' + post.author.avatar) }}" onerror="this.style.display='none'">
+        </a>
+        <div>
+            <div class="name"><a href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username }}</a></div>
+            <div class="time">{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+        </div>
+    </div>
+    <div class="post-content">{{ post.content }}</div>
+    <div class="post-actions">
+        <form method="POST" action="{{ url_for('like_post', post_id=post.id) }}">
+            <button class="like-btn {% if post.id in liked_post_ids %}liked{% endif %}" type="submit">
+                ❤ {{ post.likes|length if post.likes is defined else '' }} Нравится
+            </button>
+        </form>
+    </div>
+    <div>
+        {% for c in post.comments %}
+        <div class="comment"><b>{{ c.author.username }}:</b> {{ c.content }}</div>
+        {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('comment_post', post_id=post.id) }}" style="margin-top:8px; display:flex; gap:8px;">
+        <input class="input" style="margin-bottom:0;" type="text" name="content" placeholder="Написать комментарий..." required>
+        <button class="btn small" type="submit">➤</button>
+    </form>
+</div>
+{% endfor %}
+
+{% endblock %}

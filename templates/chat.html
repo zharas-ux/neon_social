@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Чат с {{ other.username }} — NEON SOCIAL{% endblock %}
+{% block content %}
+
+<h3>Чат с {{ other.username }}</h3>
+
+<div class="chat-window" id="chatWindow">
+    {% if not chat_messages %}
+        <div class="empty-state">Начните переписку — напишите первое сообщение!</div>
+    {% endif %}
+    {% for m in chat_messages %}
+        <div class="bubble {% if m.sender_id == current_user.id %}mine{% else %}theirs{% endif %}">
+            {{ m.content }}
+        </div>
+    {% endfor %}
+</div>
+
+<form method="POST" style="display:flex; gap:8px;">
+    <input class="input" style="margin-bottom:0;" type="text" name="content" placeholder="Напишите сообщение..." autocomplete="off" required>
+    <button class="btn" type="submit">Отправить</button>
+</form>
+
+<script>
+    var cw = document.getElementById('chatWindow');
+    if (cw) { cw.scrollTop = cw.scrollHeight; }
+</script>
+
+{% endblock %}

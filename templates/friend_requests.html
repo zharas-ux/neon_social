@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Запросы в друзья — NEON SOCIAL{% endblock %}
+{% block content %}
+
+<h3>Входящие запросы</h3>
+<div class="card">
+    {% if not incoming %}
+        <div class="empty-state">Нет новых запросов.</div>
+    {% endif %}
+    {% for fr in incoming %}
+    <div class="list-item">
+        <a href="{{ url_for('profile', username=fr.sender.username) }}" style="display:flex; align-items:center; gap:10px;">
+            <img class="avatar sm" src="{{ url_for('static', filename='uploads/' + fr.sender.avatar) }}" onerror="this.style.display='none'">
+            {{ fr.sender.username }}
+        </a>
+        <div style="display:flex; gap:8px;">
+            <form method="POST" action="{{ url_for('accept_friend_request', req_id=fr.id) }}">
+                <button class="btn small" type="submit">Принять</button>
+            </form>
+            <form method="POST" action="{{ url_for('decline_friend_request', req_id=fr.id) }}">
+                <button class="btn small secondary" type="submit">Отклонить</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h3>Исходящие запросы</h3>
+<div class="card">
+    {% if not outgoing %}
+        <div class="empty-state">Вы никому не отправляли запросов.</div>
+    {% endif %}
+    {% for fr in outgoing %}
+    <div class="list-item">
+        <a href="{{ url_for('profile', username=fr.receiver.username) }}" style="display:flex; align-items:center; gap:10px;">
+            <img class="avatar sm" src="{{ url_for('static', filename='uploads/' + fr.receiver.avatar) }}" onerror="this.style.display='none'">
+            {{ fr.receiver.username }}
+        </a>
+        <span class="badge">Ожидание</span>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

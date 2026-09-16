@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }} — NEON SOCIAL{% endblock %}
+{% block content %}
+
+<div class="card profile-header">
+    <img class="avatar lg" src="{{ url_for('static', filename='uploads/' + user.avatar) }}" onerror="this.style.display='none'">
+    <div>
+        <h2 style="margin:0;">{{ user.username }}</h2>
+        <div class="time">На сайте с {{ user.created_at.strftime('%d.%m.%Y') }}</div>
+
+        {% if user.id == current_user.id %}
+        <form method="POST" action="{{ url_for('upload_avatar') }}" enctype="multipart/form-data" style="margin-top:10px;">
+            <input type="file" name="avatar" accept="image/*" required>
+            <button class="btn small" type="submit">Загрузить аватар</button>
+        </form>
+        {% else %}
+            <div style="margin-top:10px;">
+                {% if not friendship %}
+                    <form method="POST" action="{{ url_for('send_friend_request', user_id=user.id) }}">
+                        <button class="btn small" type="submit">➕ Добавить в друзья</button>
+                    </form>
+                {% elif friendship.status == 'pending' and friendship.sender_id == current_user.id %}
+                    <span class="badge">Запрос отправлен</span>
+                {% elif friendship.status == 'pending' and friendship.receiver_id == current_user.id %}
+                    <a class="btn small" href="{{ url_for('friend_requests') }}">Ответить на запрос</a>
+                {% elif friendship.status == 'accepted' %}
+                    <span class="badge" style="background:#2fe0a7;">✓ Друзья</span>
+                    <a class="btn small secondary" href="{{ url_for('chat', user_id=user.id) }}">Написать</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if not posts %}
+    <div class="empty-state">Постов пока нет.</div>
+{% endif %}
+
+{% for post in posts %}
+<div class="card">
+    <div class="post-content">{{ post.content }}</div>
+    <div class="time">{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+</div>
+{% endfor %}
+
+{% endblock %}

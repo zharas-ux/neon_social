@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Вход — NEON SOCIAL{% endblock %}
+{% block content %}
+<div class="auth-box">
+    <h2>Вход в NEON SOCIAL</h2>
+    <form method="POST">
+        <input class="input" type="text" name="username" placeholder="Логин" required>
+        <input class="input" type="password" name="password" placeholder="Пароль" required>
+        <button class="btn" type="submit" style="width:100%">Войти</button>
+    </form>
+    <p style="text-align:center; margin-top:14px;">
+        Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a>
+    </p>
+</div>
+{% endblock %}
